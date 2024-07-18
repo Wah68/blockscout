@@ -695,7 +695,7 @@ defmodule EthereumJSONRPC.Transaction do
   defp validate_key(acc, to_key, value, %{:validation => :address_hash}) do
     if address_correct?(value), do: Map.put(acc, to_key, value), else: acc
   end
-  
+
   defp validate_key(acc, to_key, value, _validation), do: Map.put(acc, to_key, value)
 
   # todo: The similar function exists in Indexer application:
