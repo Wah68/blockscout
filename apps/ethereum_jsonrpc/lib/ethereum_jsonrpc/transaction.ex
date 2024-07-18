@@ -682,7 +682,7 @@ defmodule EthereumJSONRPC.Transaction do
       key_list = key |> Tuple.to_list()
       from_key = Enum.at(key_list, 0)
       to_key = Enum.at(key_list, 1)
-      opts = if Enum.count(key_list) > 2, do: Enum.at(key_list, 2), else: %{}
+      opts = Enum.at(key_list, 2, %{})
 
       value = transaction[from_key]
 
