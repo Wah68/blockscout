@@ -678,14 +678,34 @@ defmodule EthereumJSONRPC.Transaction do
   end
 
   def put_if_present(result, transaction, keys) do
-    Enum.reduce(keys, result, fn {from_key, to_key}, acc ->
+    Enum.reduce(keys, result, fn key, acc ->
+      key_list = key |> Tuple.to_list()
+      from_key = Enum.at(key_list, 0)
+      to_key = Enum.at(key_list, 1)
+      opts = Enum.at(key_list, 2, %{})
+
       value = transaction[from_key]
 
-      if value do
-        Map.put(acc, to_key, value)
-      else
-        acc
-      end
+      validate_key(acc, to_key, value, opts)
     end)
+  end
+
+  defp validate_key(acc, _to_key, nil, _opts), do: acc
+
+  defp validate_key(acc, to_key, value, %{:validation => :address_hash}) do
+    if address_correct?(value), do: Map.put(acc, to_key, value), else: acc
+  end
+
+  defp validate_key(acc, to_key, value, _validation), do: Map.put(acc, to_key, value)
+
+  # todo: The similar function exists in Indexer application:
+  # Here is the room for future refactoring to keep a single function.
+  @spec address_correct?(binary()) :: boolean()
+  defp address_correct?(address) when is_binary(address) do
+    String.match?(address, ~r/^0x[[:xdigit:]]{40}$/i)
+  end
+
+  defp address_correct?(_address) do
+    false
   end
 end
