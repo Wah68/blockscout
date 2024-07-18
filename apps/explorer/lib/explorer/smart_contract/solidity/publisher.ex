@@ -156,6 +156,8 @@ defmodule Explorer.SmartContract.Solidity.Publisher do
           file != file_name,
           do: %{"file_name" => file, "contract_source_code" => source, "address_hash" => address_hash}
 
+    Logger.info("Response of Rust verifier for #{to_string(address_hash)} and contract name #{inspect(contract_name)}")
+    Logger.info(inspect(sources))
     %{^file_name => contract_source_code} = sources
 
     compiler_settings = Jason.decode!(compiler_settings_string)
