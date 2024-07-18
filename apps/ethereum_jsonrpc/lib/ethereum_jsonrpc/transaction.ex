@@ -692,19 +692,11 @@ defmodule EthereumJSONRPC.Transaction do
 
   defp validate_key(acc, _to_key, nil, _opts), do: acc
 
-  defp validate_key(acc, to_key, value, %{:validation => validation}) do
-    case validation do
-      :address_hash ->
-        if address_correct?(value), do: Map.put(acc, to_key, value), else: acc
-
-      _ ->
-        Map.put(acc, to_key, value)
-    end
+  defp validate_key(acc, to_key, value, %{:validation => :address_hash}) do
+    if address_correct?(value), do: Map.put(acc, to_key, value), else: acc
   end
-
-  defp validate_key(acc, to_key, value, _validation) do
-    Map.put(acc, to_key, value)
-  end
+  
+  defp validate_key(acc, to_key, value, _validation), do: Map.put(acc, to_key, value)
 
   # todo: The similar function exists in Indexer application:
   # Here is the room for future refactoring to keep a single function.
