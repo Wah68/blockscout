@@ -293,6 +293,10 @@ defmodule Explorer.Chain.Address.MetadataPreloader do
     %{field => names[Address.checksum(address_hash)]}
   end
 
+  defp alter_address(nil, address_hash, names, field) do
+    %{field => names[Address.checksum(address_hash)]}
+  end
+
   defp alter_address(%Address{} = address, address_hash, names, :ens_domain_name) do
     %Address{address | ens_domain_name: names[Address.checksum(address_hash)]}
   end
