@@ -289,7 +289,7 @@ defmodule Explorer.Chain.Address.MetadataPreloader do
 
   defp alter_address(address, nil, _names, _field), do: address
 
-  defp alter_address(address, address_hash, names, field) when address in [nil, %NotLoaded{}] do
+  defp alter_address(%NotLoaded{}, address_hash, names, field) do
     %{field => names[Address.checksum(address_hash)]}
   end
 
