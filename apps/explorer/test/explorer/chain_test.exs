@@ -2599,7 +2599,8 @@ defmodule Explorer.ChainTest do
           :contracts_creation_internal_transaction,
           :contracts_creation_transaction,
           :token,
-          [smart_contract: :smart_contract_additional_sources]
+          [smart_contract: :smart_contract_additional_sources],
+          :proxy_implementations
         ])
 
       options = [
@@ -2611,8 +2612,6 @@ defmodule Explorer.ChainTest do
           :contracts_creation_transaction => :optional
         }
       ]
-
-      TestHelper.get_eip1967_implementation_zero_addresses()
 
       response = Chain.find_contract_address(address.hash, options, true)
 
@@ -4325,6 +4324,9 @@ defmodule Explorer.ChainTest do
         end
       )
 
+      init_config = Application.get_env(:ethereum_jsonrpc, EthereumJSONRPC.Geth)
+      Application.put_env(:ethereum_jsonrpc, EthereumJSONRPC.Geth, tracer: "call_tracer", debug_trace_timeout: "5s")
+
       assert Chain.transaction_to_revert_reason(transaction) == hex_reason
 
       assert Transaction.decoded_revert_reason(transaction, hex_reason) == {
@@ -4333,6 +4335,8 @@ defmodule Explorer.ChainTest do
                "Error(string reason)",
                [{"reason", "string", "No credit of that type"}]
              }
+
+      Application.put_env(:ethereum_jsonrpc, EthereumJSONRPC.Geth, init_config)
     end
   end
 
